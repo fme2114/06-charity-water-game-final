@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drop By Drop</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <img src="img/logo.png" alt="charity: water logo" style="width: 200px; height: auto;">
+      <h2>Drop By Drop</h2>
+    </header>
+
+    <nav>
+      <button onclick="showScreen('garden')">🌱 Garden</button>
+      <button onclick="showScreen('shop')">🛒 Shop</button>
+      <button onclick="showScreen('storage')">📦 Storage</button>
+      <button onclick="showScreen('water')">🚿 Water</button>
+    </nav>
+
+    <main>
+    <!-- Player Balance Section -->
+    <section id="player-balance" style="display: flex; justify-content: center; gap: 2rem; align-items: center; margin-bottom: 1.5rem;">
+      <div style="background: #e0f7fa; padding: 0.75rem 1.5rem; border-radius: 1rem; display: flex; align-items: center; gap: 0.5rem; font-weight: bold; font-size: 1.1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.07);">
+        <span style="font-size: 1.5rem;">💧</span>
+        <span id="balance-droplets">0</span>
+        <span style="margin-left: 0.25rem;">Water</span>
+      </div>
+      <div style="background: #fffbe0; padding: 0.75rem 1.5rem; border-radius: 1rem; display: flex; align-items: center; gap: 0.5rem; font-weight: bold; font-size: 1.1rem; box-shadow: 0 2px 6px rgba(0,0,0,0.07);">
+        <span style="font-size: 1.5rem;">🪙</span>
+        <span id="balance-coins">15</span>
+        <span style="margin-left: 0.25rem;">Coins</span>
+      </div>
+    </section>
+      <!-- Garden Screen -->
+      <section id="garden" class="screen">
+        <h3>My Garden</h3>
+        <div class="garden-plot-grid" id="garden-plot-grid">
+          <!-- Plots will be rendered by JavaScript -->
+        </div>
+      </section>
+
+      <!-- Shop Screen -->
+      <section id="shop" class="screen hidden">
+        <h3>Shop</h3>
+        <div id="shop-restock-timer" style="text-align:center; color:#159A48; font-weight:bold; margin-bottom:0.5rem;"></div>
+        <div class="shop-grid">
+          <!-- Shop items will be rendered by JavaScript -->
+        </div>
+      </section>
+
+      <!-- Storage Screen -->
+      <section id="storage" class="screen hidden">
+        <h3>Storage</h3>
+        <div class="storage-grid" id="storage-grid">
+          <!-- Storage items will be rendered here by JavaScript -->
+        </div>
+        <!-- Modal for selling -->
+        <div id="sell-modal" class="hidden modal-bg">
+          <div class="modal-box">
+            <p id="sell-modal-text">Sell this item?</p>
+            <button id="sell-confirm">Sell</button>
+            <button id="sell-cancel">Cancel</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Water Screen -->
+      <section id="water" class="screen hidden">
+        <h3>Collect Water</h3>
+        <button onclick="answerTrivia()">Answer Trivia (+5💧)</button>
+        <button onclick="solvePuzzle()">Solve Puzzle (+10💧)</button>
+        <button onclick="cleanWell()">Clean the Well (+15💧)</button>
+        <br><br>
+        <button onclick="waterPlants()">💧 Ready to Water!</button>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

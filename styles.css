@@ -1,0 +1,538 @@
+@media screen and (max-width: 1200px) and (min-width: 601px) {
+  .garden-plot-grid {
+    max-width: 99vw;
+    gap: 1.2rem;
+    padding: 0 1rem;
+  }
+  .garden-plot {
+    max-width: 340px;
+    min-width: 180px;
+    width: 100%;
+  }
+  .plot-svg {
+    max-width: 340px;
+    min-width: 160px;
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .plant-stage {
+    font-size: 3.2rem;
+  }
+}
+.garden-plot {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.plot-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 1rem;
+  background: #f4f1e9;
+  box-shadow: 0 2px 8px #9b765344;
+  transition: box-shadow 0.15s;
+}
+.plot-svg:hover {
+  box-shadow: 0 6px 18px #2E9DF744;
+}
+.plant-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -60%);
+  font-size: 2.5rem;
+  z-index: 2;
+  user-select: none;
+  /* Show pointer on hover for tooltips */
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* Tooltip for plant stage (simple beginner-friendly) */
+.garden-plot[title]:hover::after {
+  content: attr(title);
+  white-space: pre-line;
+  position: absolute;
+  left: 50%;
+  top: 60%; /* Move tooltip below the center of the plot */
+  transform: translate(-50%, 0);
+  background: #fffbe0;
+  color: #159A48;
+  border: 1px solid #ffe680;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  box-shadow: 0 2px 8px #2E9DF733;
+  z-index: 10;
+  pointer-events: none;
+}
+.harvest-btn {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  background: #4FCB53;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.3rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 6px #159A4844;
+  z-index: 3;
+  display: none;
+}
+.garden-plot.bloom .harvest-btn {
+  display: block;
+}
+/* Garden Plot Grid for 4 plots */
+.garden-plot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem auto 1rem auto;
+  width: 100%;
+  max-width: 100vw;
+  padding: 0 6rem;
+}
+.plot-svg {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px #9b765344;
+  border-radius: 1rem;
+  background: #f4f1e9;
+  transition: box-shadow 0.15s;
+}
+.plot-svg:hover {
+  box-shadow: 0 6px 18px #2E9DF744;
+}
+@media screen and (max-width: 600px) {
+  .garden-plot-grid {
+    max-width: 99vw;
+    gap: 0.1rem;
+    padding: 0 0.5rem;
+  }
+  .garden-plot {
+    max-width: 95vw;
+    min-width: 120px;
+    width: 100%;
+  }
+  .plot-svg {
+    max-width: 95vw;
+    min-width: 90px;
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .plant-stage {
+    font-size: 2.1rem;
+  }
+}
+/* Storage Grid (like shop) */
+.storage-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.storage-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, #e0f7fa 60%, #8BD1CB 100%);
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 16px rgba(46, 157, 247, 0.10), 0 1.5px 6px rgba(255, 201, 7, 0.08);
+  padding: 1.2rem 0.5rem 1rem 0.5rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+}
+.storage-item:hover {
+  transform: translateY(-6px) scale(1.07) rotate(-2deg);
+  box-shadow: 0 8px 24px rgba(46, 157, 247, 0.18), 0 3px 12px rgba(255, 201, 7, 0.12);
+  background: linear-gradient(135deg, #8BD1CB 60%, #e0f7fa 100%);
+}
+.storage-title {
+  font-size: 1.1rem;
+  color: #159A48;
+  margin-top: 0.25rem;
+  text-align: center;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 0 #fffbe0, 0 2px 4px #2E9DF733;
+}
+.storage-count {
+  font-size: 1.2rem;
+  color: #2E9DF7;
+  font-weight: bold;
+}
+/* Modal styles */
+.modal-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.modal-box {
+  background: #fff;
+  border-radius: 1rem;
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  box-shadow: 0 4px 24px #2E9DF733;
+  text-align: center;
+}
+.modal-box button {
+  margin: 0.5rem 1rem 0 1rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: #2E9DF7;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.modal-box button:hover {
+  background: #159A48;
+}
+/* Player Balance Section */
+#player-balance {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+#player-balance div {
+  background: #e0f7fa;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: bold;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+}
+#player-balance div:last-child {
+  background: #fffbe0;
+}
+#balance-droplets, #balance-coins {
+  font-size: 1.2rem;
+  min-width: 2ch;
+}
+/* Charity: water Brand Colors
+
+Primary Colors:
+- Yellow:     #FFC907
+- Blue:       #2E9DF7
+
+Secondary Colors:
+- Light Blue: #8BD1CB
+- Green:      #4FCB53
+- Orange:     #FF902A
+- Red:        #F5402C
+- Dark Green: #159A48
+- Pink:       #F16061
+
+*/
+
+
+/* style.css */
+
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f4f1e9;
+  color: #333;
+  text-align: center;
+  /* Removed default body padding for a flush layout */
+  padding: 0;
+}
+
+header h2 {
+  font-size: 2rem;
+  color: #2E9DF7;
+  margin: 0.5rem 0 1rem;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+
+nav button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.6rem;
+  background-color: #ffe680;
+  color: #333;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  font-size: 1.1rem;
+  transition: transform 0.1s;
+  max-width: 100vw;
+  width: auto;
+  box-sizing: border-box;
+}
+nav button:active {
+  transform: scale(0.97);
+}
+
+@media screen and (max-width: 600px) {
+  nav {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+  }
+  nav button {
+    width: 95vw;
+    min-width: 0;
+    max-width: 98vw;
+    box-sizing: border-box;
+    font-size: 1rem;
+    padding: 0.75rem 0.5rem;
+    margin: 0;
+    display: block;
+  }
+}
+
+main {
+  max-width: 600px;
+  margin: auto;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+/* Garden */
+.garden-grid {
+  /* Removed grid layout for SVG centering */
+  display: block;
+  margin-top: 1rem;
+}
+
+#garden h3 {
+  font-size: 1.5rem;
+  color: #159A48;
+  margin-bottom: 0rem;
+}
+
+.plot {
+  background-color: #9b7653;
+  width: 100px;
+  height: 100px;
+  border-radius: 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  cursor: pointer;
+  margin: auto;
+}
+
+/* Shop */
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.shop-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, #fffbe0 60%, #ffe680 100%);
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 16px rgba(255, 201, 7, 0.10), 0 1.5px 6px rgba(46, 157, 247, 0.08);
+  padding: 1.2rem 0.5rem 1rem 0.5rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+  cursor: pointer;
+}
+.shop-item:hover {
+  transform: translateY(-6px) scale(1.07) rotate(-2deg);
+  box-shadow: 0 8px 24px rgba(255, 201, 7, 0.18), 0 3px 12px rgba(46, 157, 247, 0.12);
+  background: linear-gradient(135deg, #ffe680 60%, #fffbe0 100%);
+}
+
+
+.shop-title {
+  font-size: 1.1rem;
+  color: #2E9DF7;
+  margin-top: 0.25rem;
+  text-align: center;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 0 #fffbe0, 0 2px 4px #ffc90733;
+}
+
+
+@media screen and (max-width: 900px) {
+  .shop-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .shop-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.shop-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.shop-title {
+  font-size: 0.95rem;
+  color: #333;
+  margin-top: 0.25rem;
+  text-align: center;
+}
+
+@media screen and (max-width: 900px) {
+  .shop-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .shop-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.shop-grid button {
+  padding: 1.2rem 1.2rem;
+  font-size: 2.2rem;
+  background: linear-gradient(135deg, #8BD1CB 60%, #2E9DF7 100%);
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(46, 157, 247, 0.10);
+  color: #fff;
+  transition: background 0.15s, transform 0.12s;
+}
+.shop-grid button:hover {
+  background: linear-gradient(135deg, #2E9DF7 60%, #8BD1CB 100%);
+  transform: scale(1.12) rotate(2deg);
+  color: #fffbe0;
+}
+
+/* Storage */
+#inventory {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding: 0 1rem;
+}
+
+#inventory li {
+  background: #fff;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+/* Water Collection */
+
+#water button {
+  display: block;
+  margin: 0.5rem auto;
+  padding: 0.8rem 2rem;
+  font-size: 1.15rem;
+  background-color: #85c1ff;
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 400px;
+  transition: background 0.15s, transform 0.12s;
+}
+#water button:hover {
+  background-color: #2E9DF7;
+  transform: scale(1.04);
+}
+
+@media screen and (max-width: 600px) {
+  #water button {
+    font-size: 1.25rem;
+    padding: 1.1rem 0.5rem;
+    width: 95vw;
+    max-width: 98vw;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 600px) {
+  .garden-grid,
+  .shop-grid,
+  #inventory {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  nav {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .plot {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+/* Utility */
+.hidden {
+  display: none;
+}
