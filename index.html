@@ -8,6 +8,13 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  
+
+  <!-- Background music audio element -->
+  <audio id="bg-music" src="mp3/Gymnopédie No.1.mp3" loop></audio>
+  <!-- Play Music button for user interaction (helps with autoplay restrictions) -->
+  <button id="play-music-btn" style="margin: 1rem 0;">Play Music</button>
+
   <div id="app">
     <header>
       <img src="img/logo.png" alt="charity: water logo" style="width: 200px; height: auto;">
@@ -81,5 +88,32 @@
   </div>
 
   <script src="script.js"></script>
+  <script>
+    // Play or pause music when the button is clicked
+    const playBtn = document.getElementById('play-music-btn');
+    const music = document.getElementById('bg-music');
+
+    playBtn.textContent = 'Play Music'; // Set initial label
+
+    playBtn.onclick = function() {
+      // If music is paused, play it and update button
+      if (music.paused) {
+        music.play();
+        playBtn.textContent = 'Pause Music';
+      } else {
+        // If music is playing, pause it and update button
+        music.pause();
+        playBtn.textContent = 'Play Music';
+      }
+    };
+
+    // Optional: update button if user pauses/plays music with other controls
+    music.onplay = function() {
+      playBtn.textContent = 'Pause Music';
+    };
+    music.onpause = function() {
+      playBtn.textContent = 'Play Music';
+    };
+  </script>
 </body>
 </html>
