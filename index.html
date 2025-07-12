@@ -5,20 +5,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Drop By Drop</title>
+  <!-- Google Fonts: Montserrat for headings, Open Sans for body -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Sound effect for success -->
+  <audio id="yay-sound" src="mp3/yay.mp3" preload="auto"></audio>
+  <!-- Sound effect for button clicks -->
+  <audio id="button-sound" src="mp3/button.mp3" preload="auto"></audio>
   
 
   <!-- Background music audio element -->
   <audio id="bg-music" src="mp3/Gymnopédie No.1.mp3" loop></audio>
+  <h2>Drop By Drop</h2>
   <!-- Play Music button for user interaction (helps with autoplay restrictions) -->
-  <button id="play-music-btn" style="margin: 1rem 0;">Play Music</button>
+  <button id="play-music-btn" class="music-btn">Play Music</button>
+  <button id="hard-mode-btn" class="mode-btn">Hard Mode</button>
 
   <div id="app">
     <header>
-      <img src="img/logo.png" alt="charity: water logo" style="width: 200px; height: auto;">
-      <h2>Drop By Drop</h2>
+      <!-- Logo and other header content can go here if needed -->
     </header>
 
     <nav>
@@ -50,6 +58,7 @@
         </div>
       </section>
 
+
       <!-- Shop Screen -->
       <section id="shop" class="screen hidden">
         <h3>Shop</h3>
@@ -78,16 +87,48 @@
       <!-- Water Screen -->
       <section id="water" class="screen hidden">
         <h3>Collect Water</h3>
-        <button onclick="answerTrivia()">Answer Trivia (+5💧)</button>
-        <button onclick="solvePuzzle()">Solve Puzzle (+10💧)</button>
-        <button onclick="cleanWell()">Clean the Well (+15💧)</button>
+        <button id="trivia-btn" onclick="answerTrivia()">Answer Trivia (+5💧)</button>
+        <button id="puzzle-btn" onclick="solvePuzzle()">Solve Puzzle (+10💧)</button>
+        <button id="well-btn" onclick="cleanWell()">Clean the Well (+15💧)</button>
         <br><br>
         <button onclick="waterPlants()">💧 Ready to Water!</button>
+        <!-- Water page footer -->
+        <footer style="margin-top:2rem; padding:1rem; background:#e0f7fa; border-radius:1rem;">
+          <span>
+            <a href="https://www.charitywater.org/global-water-crisis" target="_blank" style="color:#2E9DF7; font-weight:bold; text-decoration:underline;">Learn more</a>
+            about global water access and what charity: water is doing to help.
+          </span>
+        </footer>
       </section>
     </main>
   </div>
 
+
+  <div style="margin-top: 1rem; margin-bottom: 2rem; display: flex; justify-content: center;">
+    <a href="https://www.charitywater.org/" target="_blank" rel="noopener noreferrer">
+      <img src="img/cw_logo_horizontal.png" alt="charity: water logo" style="max-width: 260px; width: 100%; height: auto;">
+    </a>
+  </div>
+
   <script src="script.js"></script>
+  <script>
+    // Play button sound on every button click
+    function playButtonSound() {
+      const btnSound = document.getElementById('button-sound');
+      if (btnSound) {
+        btnSound.currentTime = 0;
+        btnSound.play();
+      }
+    }
+    // Add event listener to all buttons (except audio controls)
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('button').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          playButtonSound();
+        });
+      });
+    });
+  </script>
   <script>
     // Play or pause music when the button is clicked
     const playBtn = document.getElementById('play-music-btn');

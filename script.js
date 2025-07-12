@@ -36,7 +36,7 @@ let nextShopReset = Date.now() + SHOP_RESET_INTERVAL;
 // Garden Plots: 4 plots, each with a stage (0=empty, 1=seed, 2=sprout, 3=bloom), and a timestamp for last update
 const GARDEN_PLOT_COUNT = 4;
 // Growth interval: 1 minute (60 seconds * 1000 ms)
-const GROWTH_INTERVAL = 60 * 1000; // 1 minute between growth stages
+let GROWTH_INTERVAL = 60 * 1000; // 1 minute between growth stages
 // Flower types and their emojis for each stage
 const FLOWER_TYPES = [
   // Each flower type has correct emoji for each stage
@@ -219,6 +219,7 @@ function harvestPlot(idx) {
   gardenPlots[idx] = { stage: 0, lastUpdate: null, needsWater: false, flowerType: null };
   renderGarden();
   updateStorageUI();
+  playYaySound(); // Play success sound
   alert('Flower harvested! It was added to your storage.');
 }
 
@@ -337,6 +338,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
   document.getElementById('sell-cancel').onclick = closeSellModal;
+
+  // Toggle between Hard and Easy mode with game restart
+  const hardBtn = document.getElementById('hard-mode-btn');
+  if (hardBtn) {
+    hardBtn.onclick = function() {
+      if (hardMode) {
+        enableEasyMode();
+      } else {
+        enableHardMode();
+      }
+    };
+    // Set initial button text
+    hardBtn.textContent = hardMode ? 'Switch to Easy Mode' : 'Switch to Hard Mode';
+  }
 });
 
 // Show a picker to select a plot to plant a seed
@@ -607,11 +622,13 @@ function answerTrivia() {
       document.getElementById(`trivia-opt-${i}`).onclick = function() {
         if (i === trivia.correct) {
           // Correct answer
-          droplets += 5;
+          let reward = hardMode ? 2 : 5;
+          droplets += reward;
+          playYaySound(); // Play success sound
           // Use setTimeout to make sure the DOM is updated before accessing elements
           modal.innerHTML = `
             <div class="modal-box">
-              <p style='color:#159A48; font-weight:bold;'>Correct! +5 water droplets 💧</p>
+              <p style='color:#159A48; font-weight:bold;'>Correct! +${reward} water droplets 💧</p>
               <button id="trivia-close">OK</button>
             </div>
           `;
@@ -644,30 +661,32 @@ function answerTrivia() {
 }
 
 
-function solvePuzzle() {
-  // Super simple drag-and-drop pipe puzzle for beginners
-  // Only 2 slots to fill, and only 2 pieces to choose from (both are correct)
 
-  // The correct solution: [straight (90°), elbow (90°)]
+// Puzzle minigame: Only straight pipes, rotate to connect horizontally
+function solvePuzzle() {
+  // For beginners: only straight pipes, must rotate both to horizontal (0°)
+  // The correct solution: [straight (0°), straight (0°)]
   const solution = [
-    { type: 'straight', rotation: 90 },
-    { type: 'elbow', rotation: 90 }
+    { type: 'straight', rotation: 0 },
+    { type: 'straight', rotation: 0 }
   ];
 
-  // Only show the 2 correct pieces as draggable options
+  // Only show 2 straight pieces, both start at 90° (vertical)
   const availablePieces = [
     { type: 'straight', rotation: 90 },
-    { type: 'elbow', rotation: 90 }
+    { type: 'straight', rotation: 90 }
   ];
 
-  // Unicode for pipes
+  // Unicode for pipes: 0° = horizontal, 90° = vertical
   const pipeChars = {
-    'straight': ['│', '─', '│', '─'], // 0, 90, 180, 270
-    'elbow': ['└', '┌', '┐', '┘']     // 0, 90, 180, 270
+    'straight': ['─', '│'] // 0: horizontal, 1: vertical
   };
 
-  // The slots to fill (start empty)
-  let slots = [null, null];
+  // The slots to fill (start with both pieces in place, both vertical)
+  let slots = [
+    { ...availablePieces[0], _pieceId: 0 },
+    { ...availablePieces[1], _pieceId: 1 }
+  ];
 
   // Create modal if not present
   let modal = document.getElementById('puzzle-modal');
@@ -684,9 +703,9 @@ function solvePuzzle() {
     let msgHtml = message ? `<div style='color:#F5402C; font-weight:bold; margin-bottom:0.5rem;'>${message}</div>` : '';
     // Pipe legend for beginners
     let legendHtml = `<div style='display:flex; justify-content:center; gap:1.5rem; margin-bottom:0.5rem;'>
-      <div style='font-size:1.3rem;'><span style='border:1.5px solid #8BD1CB; border-radius:0.4rem; padding:0.2rem 0.5rem; background:#e0f7fa;'>│</span><br><span style='font-size:0.9rem; color:#159A48;'>Straight</span></div>
-      <div style='font-size:1.3rem;'><span style='border:1.5px solid #8BD1CB; border-radius:0.4rem; padding:0.2rem 0.5rem; background:#e0f7fa;'>┐</span><br><span style='font-size:0.9rem; color:#159A48;'>Elbow</span></div>
-      <div style='font-size:1.3rem;'><span style='border:1.5px solid #8BD1CB; border-radius:0.4rem; padding:0.2rem 0.5rem; background:#e0f7fa;'>🖱️</span><br><span style='font-size:0.9rem; color:#159A48;'>Drag & drop</span></div>
+      <div style='font-size:1.3rem;'><span style='border:1.5px solid #8BD1CB; border-radius:0.4rem; padding:0.2rem 0.5rem; background:#e0f7fa;'>─</span><br><span style='font-size:0.9rem; color:#159A48;'>Horizontal</span></div>
+      <div style='font-size:1.3rem;'><span style='border:1.5px solid #8BD1CB; border-radius:0.4rem; padding:0.2rem 0.5rem; background:#e0f7fa;'>│</span><br><span style='font-size:0.9rem; color:#159A48;'>Vertical</span></div>
+      <div style='font-size:1.3rem;'><span style='border:1.5px solid #8BD1CB; border-radius:0.4rem; padding:0.2rem 0.5rem; background:#e0f7fa;'>�</span><br><span style='font-size:0.9rem; color:#159A48;'>Click to rotate</span></div>
     </div>`;
 
     // Puzzle row: water source, 2 slots, flower
@@ -697,121 +716,63 @@ function solvePuzzle() {
       let slotContent = '';
       if (slots[i]) {
         // Show the pipe piece in the slot
-        const rotIdx = slots[i].rotation / 90;
+        const rotIdx = slots[i].rotation === 0 ? 0 : 1;
         slotContent = `<span style='font-size:2.5rem; pointer-events:none;'>${pipeChars[slots[i].type][rotIdx]}</span>`;
       } else {
-        // Empty slot
+        // Empty slot (should not happen in this version)
         slotContent = `<span style='font-size:2.5rem; color:#bbb;'>⬜</span>`;
       }
-      puzzleHtml += `<div class='pipe-slot' data-idx='${i}' style='width:3.5rem; height:3.5rem; border:2px dashed #8BD1CB; border-radius:0.7rem; background:#f8f8f8; display:flex; align-items:center; justify-content:center;' ondragover='event.preventDefault()'></div>`;
+      // Each slot is clickable to rotate the pipe
+      puzzleHtml += `<div class='pipe-slot' data-idx='${i}' style='width:3.5rem; height:3.5rem; border:2px dashed #8BD1CB; border-radius:0.7rem; background:#f8f8f8; display:flex; align-items:center; justify-content:center; cursor:pointer;' title='Click to rotate'>${slotContent}</div>`;
     }
     puzzleHtml += `<span style='font-size:2rem; margin-left:0.2rem;'>🌸</span></div>`;
-
-    // Draggable pieces row
-    let piecesHtml = `<div style='display:flex; justify-content:center; gap:0.7rem; margin-bottom:0.7rem;'>`;
-    availablePieces.forEach((piece, i) => {
-      // Only show pieces that are not already placed in a slot
-      let isPlaced = slots.some(slot => slot && slot._pieceId === i);
-      if (!isPlaced) {
-        const rotIdx = piece.rotation / 90;
-        piecesHtml += `<div class='draggable-piece' draggable='true' data-pieceid='${i}' style='font-size:2.5rem; width:3.5rem; height:3.5rem; border-radius:0.7rem; border:2px solid #8BD1CB; background:#e0f7fa; display:flex; align-items:center; justify-content:center; cursor:grab;'>${pipeChars[piece.type][rotIdx]}</div>`;
-      }
-    });
-    piecesHtml += `</div>`;
 
     modal.innerHTML = `
       <div class="modal-box">
         <h4 style='color:#2E9DF7; margin-bottom:0.2rem;'>Pipe Puzzle</h4>
-        <p style='margin-bottom:0.7rem; color:#159A48; font-size:1.05rem;'>Drag and drop the pipes to connect the water to the flower.<br><span style='font-size:1.1rem;'>Just fill both slots!</span></p>
+        <p style='margin-bottom:0.7rem; color:#159A48; font-size:1.05rem;'>Click each pipe to rotate it. Make both pipes horizontal to connect the water to the flower!</p>
         ${legendHtml}
         ${puzzleHtml}
-        ${piecesHtml}
         ${msgHtml}
         <button id='puzzle-check' style='background:#159A48; color:#fff; margin-top:0.5rem;'>Check</button>
         <button id='puzzle-exit' style='background:#eee; color:#333; margin-top:0.5rem; margin-left:0.7rem;'>Exit</button>
       </div>
     `;
 
-    // Add drag and drop event listeners for slots
+    // Add click event listeners for slots to rotate the pipe
     modal.querySelectorAll('.pipe-slot').forEach((slotDiv, idx) => {
-      // Show the piece in the slot if present
-      if (slots[idx]) {
-        const rotIdx = slots[idx].rotation / 90;
-        slotDiv.innerHTML = `<span style='font-size:2.5rem; pointer-events:none;'>${pipeChars[slots[idx].type][rotIdx]}</span>`;
-        // Make the slot clickable to remove the piece
-        slotDiv.style.cursor = 'pointer';
-        slotDiv.title = 'Click to remove pipe';
-        slotDiv.onclick = function() {
-          slots[idx] = null;
-          renderPuzzle();
-        };
-      } else {
-        slotDiv.innerHTML = `<span style='font-size:2.5rem; color:#bbb;'>⬜</span>`;
-        slotDiv.style.cursor = 'default';
-        slotDiv.title = 'Drop a pipe here';
-        slotDiv.onclick = null;
-      }
-      // Drag over
-      slotDiv.ondragover = function(e) {
-        e.preventDefault();
-        slotDiv.style.background = '#e0f7fa';
-      };
-      slotDiv.ondragleave = function(e) {
-        slotDiv.style.background = '#f8f8f8';
-      };
-      // Drop
-      slotDiv.ondrop = function(e) {
-        e.preventDefault();
-        slotDiv.style.background = '#f8f8f8';
-        const pieceId = parseInt(e.dataTransfer.getData('pieceid'));
-        // Only allow drop if slot is empty
-        if (!slots[idx]) {
-          // Place a copy of the piece in the slot, with a _pieceId for tracking
-          slots[idx] = { ...availablePieces[pieceId], _pieceId: pieceId };
+      slotDiv.onclick = function() {
+        // Rotate between 0° (horizontal) and 90° (vertical)
+        if (slots[idx]) {
+          slots[idx].rotation = slots[idx].rotation === 0 ? 90 : 0;
           renderPuzzle();
         }
-      };
-    });
-
-    // Add dragstart event listeners for pieces
-    modal.querySelectorAll('.draggable-piece').forEach((pieceDiv) => {
-      pieceDiv.ondragstart = function(e) {
-        e.dataTransfer.setData('pieceid', pieceDiv.getAttribute('data-pieceid'));
       };
     });
 
     // Check button
     document.getElementById('puzzle-check').onclick = function() {
-      // Only check if both slots are filled
-      if (slots.every(slot => slot)) {
-        // Check if the solution matches
-        let correct = true;
-        for (let i = 0; i < 2; i++) {
-          if (!slots[i] || slots[i].type !== solution[i].type || slots[i].rotation !== solution[i].rotation) {
-            correct = false;
-            break;
+      // Check if both slots are horizontal (0°)
+      let correct = slots.every(slot => slot && slot.type === 'straight' && slot.rotation === 0);
+      if (correct) {
+        playYaySound(); // Play success sound
+        let reward = hardMode ? 4 : 10;
+        droplets += reward;
+        modal.innerHTML = `<div class='modal-box'><p style='color:#159A48; font-weight:bold;'>Puzzle solved! +${reward} water droplets 💧</p><button id='puzzle-close'>OK</button></div>`;
+        // Use setTimeout to ensure DOM is updated before accessing elements
+        setTimeout(() => {
+          // Always check if the element exists before updating it
+          const bal = document.getElementById('balance-droplets');
+          if (bal) bal.textContent = droplets;
+          const closeBtn = document.getElementById('puzzle-close');
+          if (closeBtn) {
+            closeBtn.onclick = function() {
+              modal.classList.add('hidden');
+            };
           }
-        }
-        if (correct) {
-          modal.innerHTML = `<div class='modal-box'><p style='color:#159A48; font-weight:bold;'>Puzzle solved! +10 water droplets 💧</p><button id='puzzle-close'>OK</button></div>`;
-          droplets += 10;
-          // Use setTimeout to make sure the DOM is updated before accessing elements
-          setTimeout(() => {
-            // Always check if the element exists before updating it
-            const bal = document.getElementById('balance-droplets');
-            if (bal) bal.textContent = droplets;
-            const closeBtn = document.getElementById('puzzle-close');
-            if (closeBtn) {
-              closeBtn.onclick = function() {
-                modal.classList.add('hidden');
-              };
-            }
-          }, 0); // 0ms delay to ensure DOM is ready
-        } else {
-          renderPuzzle('Not quite right! Try again.');
-        }
+        }, 0); // 0ms delay to ensure DOM is ready
       } else {
-        renderPuzzle('Fill both slots first!');
+        renderPuzzle('Rotate both pipes to be horizontal!');
       }
     };
     // Exit button
@@ -848,9 +809,12 @@ function cleanWell() {
   function renderWell(trashLeft) {
     // If all trash is gone, show success
     if (trashLeft.length === 0) {
-      // Show success message and OK button
-      modal.innerHTML = `<div class='modal-box'><p style='color:#159A48; font-weight:bold;'>Well cleaned! +15 water droplets 💧</p><button id='well-close'>OK</button></div>`;
-      droplets += 15;
+      // Calculate reward before showing the message
+      let reward = hardMode ? 6 : 15;
+      droplets += reward;
+      playYaySound(); // Play success sound
+      // Show success message and OK button with correct reward
+      modal.innerHTML = `<div class='modal-box'><p style='color:#159A48; font-weight:bold;'>Well cleaned! +${reward} water droplets 💧</p><button id='well-close'>OK</button></div>`;
       // Use setTimeout to ensure DOM is updated before accessing elements
       setTimeout(() => {
         // Update water droplet counts safely
@@ -881,6 +845,7 @@ function cleanWell() {
       const x = 90 + Math.round(Math.cos(rad) * radius);
       const y = 90 + Math.round(Math.sin(rad) * radius);
       wellHtml += `<span class='well-trash' data-idx='${i}' style='position:absolute; left:${x}px; top:${y}px; font-size:2.2rem; cursor:pointer; user-select:none; z-index:2;'>${emoji}</span>`;
+    
     });
     wellHtml += `</div>`;
 
@@ -892,6 +857,7 @@ function cleanWell() {
         <button id='well-exit' style='background:#eee; color:#333; margin-top:1rem;'>Exit</button>
       </div>
     `;
+  
 
     // Add click handlers to each trash emoji
     modal.querySelectorAll('.well-trash').forEach((el, idx) => {
@@ -931,7 +897,7 @@ function waterPlants() {
     }
     // Water the plot
     droplets -= 5;
-    document.getElementById('droplets').textContent = droplets;
+    // Update water droplet balance safely
     const bal = document.getElementById('balance-droplets');
     if (bal) bal.textContent = droplets;
     // If just planted (stage 1, lastUpdate null), start timer
@@ -963,3 +929,93 @@ renderGarden();
 
 // For testing: you can call plantSeedInGarden() in the console to plant a seed
 // Example: plantSeedInGarden();
+
+// Play the yay sound effect for correct actions
+function playYaySound() {
+  const yay = document.getElementById('yay-sound');
+  if (yay) {
+    yay.currentTime = 0; // rewind to start
+    yay.play();
+  }
+}
+
+// Hard Mode logic
+let hardMode = false;
+
+// Function to reset the game for Easy Mode
+function enableEasyMode() {
+  hardMode = false;
+  coins = 20; // Start with 20 coins in Easy Mode
+  droplets = 0; // Start with 0 water droplets in Easy Mode
+  // Restore seeds and fertilizer to default easy mode values
+  storage.forEach(item => {
+    if (item.name.endsWith('Seed')) item.count = 1;
+    if (item.name === 'Fertilizer') item.count = 5;
+    if (!item.price) item.count = 0; // flowers
+  });
+  // Growth interval back to 1 minute
+  GROWTH_INTERVAL = 60 * 1000;
+  // Reset garden
+  gardenPlots.forEach(plot => {
+    plot.stage = 0;
+    plot.lastUpdate = null;
+    plot.needsWater = false;
+    plot.flowerType = null;
+  });
+  // Update UI
+  updateCoinUI();
+  updateStorageUI();
+  const dropletEl = document.getElementById('balance-droplets');
+  if (dropletEl) dropletEl.textContent = droplets;
+  renderGarden();
+  // Update button text
+  const hardBtn = document.getElementById('hard-mode-btn');
+  if (hardBtn) hardBtn.textContent = 'Switch to Hard Mode';
+  // Update water minigame button text for easy mode
+  const triviaBtn = document.getElementById('trivia-btn');
+  if (triviaBtn) triviaBtn.textContent = 'Answer Trivia (+5💧)';
+  const puzzleBtn = document.getElementById('puzzle-btn');
+  if (puzzleBtn) puzzleBtn.textContent = 'Solve Puzzle (+10💧)';
+  const wellBtn = document.getElementById('well-btn');
+  if (wellBtn) wellBtn.textContent = 'Clean the Well (+15💧)';
+  alert('Easy Mode enabled! You start with 50 coins, 1 of each seed, and tasks give more droplets. Plants grow faster.');
+}
+
+// Function to reset the game for Hard Mode
+function enableHardMode() {
+  hardMode = true;
+  coins = 10;
+  droplets = 0;
+  // Remove all seeds from storage
+  storage.forEach(item => {
+    if (item.name.endsWith('Seed')) item.count = 0;
+    if (item.name === 'Fertilizer') item.count = 3; // Make fertilizer a bit less too
+    if (!item.price) item.count = 0; // flowers
+  });
+  // Make growth interval 2 minutes (1 min longer)
+  GROWTH_INTERVAL = 2 * 60 * 1000;
+  // Reset garden
+  gardenPlots.forEach(plot => {
+    plot.stage = 0;
+    plot.lastUpdate = null;
+    plot.needsWater = false;
+    plot.flowerType = null;
+  });
+  // Update UI
+  updateCoinUI();
+  updateStorageUI();
+  const dropletEl = document.getElementById('balance-droplets');
+  if (dropletEl) dropletEl.textContent = droplets;
+  renderGarden();
+  // Update button text
+  const hardBtn = document.getElementById('hard-mode-btn');
+  if (hardBtn) hardBtn.textContent = 'Switch to Easy Mode';
+  // Update water minigame button text for hard mode
+  const triviaBtn = document.getElementById('trivia-btn');
+  if (triviaBtn) triviaBtn.textContent = 'Answer Trivia (+2💧)';
+  const puzzleBtn = document.getElementById('puzzle-btn');
+  if (puzzleBtn) puzzleBtn.textContent = 'Solve Puzzle (+4💧)';
+  const wellBtn = document.getElementById('well-btn');
+  if (wellBtn) wellBtn.textContent = 'Clean the Well (+6💧)';
+  alert('Hard Mode enabled! You start with 10 coins, no seeds, and tasks give fewer droplets. Plants grow slower. Good luck!');
+}

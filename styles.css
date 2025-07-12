@@ -1,25 +1,38 @@
-@media screen and (max-width: 1200px) and (min-width: 601px) {
-  .garden-plot-grid {
-    max-width: 99vw;
-    gap: 1.2rem;
-    padding: 0 1rem;
-  }
-  .garden-plot {
-    max-width: 340px;
-    min-width: 180px;
-    width: 100%;
-  }
-  .plot-svg {
-    max-width: 340px;
-    min-width: 160px;
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-  .plant-stage {
-    font-size: 3.2rem;
-  }
+
+/* Mode and Music Buttons Styling */
+.mode-btn, .music-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.7rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 1rem 0.5rem 1rem 0;
+  box-shadow: 0 2px 6px rgba(46,157,247,0.10);
+  transition: background 0.15s, color 0.15s, transform 0.12s;
+  outline: none;
 }
+.mode-btn {
+  background: linear-gradient(135deg, #F5402C 60%, #FFC907 100%);
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+.mode-btn:hover {
+  background: linear-gradient(135deg, #FFC907 60%, #F5402C 100%);
+  color: #fffbe0;
+  transform: scale(1.04);
+}
+.music-btn {
+  background: linear-gradient(135deg, #2E9DF7 60%, #8BD1CB 100%);
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+.music-btn:hover {
+  background: linear-gradient(135deg, #8BD1CB 60%, #2E9DF7 100%);
+  color: #fffbe0;
+  transform: scale(1.04);
+}
+/* Removed .garden-plot-grid override for 601px-1200px to allow mobile/desktop adaptation */
 .garden-plot {
   position: relative;
   width: 100%;
@@ -94,7 +107,7 @@
 .garden-plot.bloom .harvest-btn {
   display: block;
 }
-/* Garden Plot Grid for 4 plots */
+/* Garden Plot Grid for 4 plots (same for all screen sizes) */
 .garden-plot-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -261,11 +274,19 @@ Secondary Colors:
 /* style.css */
 
 /* General Reset */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Open Sans', Arial, sans-serif;
+}
+
+/* Use Montserrat for all headings, Open Sans for body */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', 'Open Sans', Arial, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 body {
@@ -276,10 +297,14 @@ body {
   padding: 0;
 }
 
-header h2 {
+h2 {
   font-size: 2rem;
   color: #2E9DF7;
-  margin: 0.5rem 0 1rem;
+  margin: 0.5rem auto 1rem auto;
+  text-align: center;
+  width: 100%;
+  display: block;
+  margin-top: 1rem;
 }
 
 nav {
@@ -287,6 +312,8 @@ nav {
   justify-content: center;
   gap: 1rem;
   margin-bottom: 1rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 
@@ -328,9 +355,76 @@ nav button:active {
   }
 }
 
-main {
-  max-width: 600px;
-  margin: auto;
+
+/* Desktop main layout improvements */
+@media screen and (min-width: 601px) {
+  main {
+    max-width: 1100px;
+    margin: 2.5rem auto 2rem auto;
+    background: linear-gradient(120deg, #8BD1CB 0%, #2E9DF7 100%);
+    border-radius: 2.2rem;
+    box-shadow: 0 8px 32px #2E9DF744, 0 1.5px 6px #FFC90733;
+    padding: 2.5rem 3.5rem 2.5rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 70vh;
+  }
+  /* No override for .garden-plot-grid: use same grid for all sizes */
+  #app {
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2.5rem;
+    margin-bottom: 1.5rem;
+    padding-left: 0.5rem;
+  }
+  header img {
+    width: 180px;
+    height: auto;
+    margin-bottom: 0;
+  }
+  header h2 {
+    font-size: 2.5rem;
+    margin: 0;
+    color: #2E9DF7;
+    text-align: center;
+    letter-spacing: 1.5px;
+    text-shadow: 0 2px 8px #fffbe0cc;
+  }
+  nav {
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    /* Remove left padding for centering */
+    padding-left: 0;
+  }
+  #player-balance {
+    justify-content: flex-end;
+    gap: 2.5rem;
+    margin-bottom: 2.5rem;
+    padding-right: 1.5rem;
+  }
+  .screen {
+    padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+    border-radius: 1.2rem;
+    background: #fff;
+    box-shadow: 0 2px 12px #2E9DF711;
+    margin-bottom: 2rem;
+  }
+  footer {
+    margin-top: 2.5rem !important;
+    border-radius: 1.2rem;
+    background: #e0f7fa;
+    box-shadow: 0 2px 8px #2E9DF711;
+    padding: 1.2rem 2rem !important;
+    font-size: 1.1rem;
+  }
 }
 
 .screen {
@@ -341,15 +435,21 @@ main {
   display: block;
 }
 
-/* Garden */
-.garden-grid {
-  /* Removed grid layout for SVG centering */
-  display: block;
-  margin-top: 1rem;
+.garden-plot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem auto 1rem auto;
+  width: 100%;
+  max-width: 100vw;
+  padding: 0 9rem;
 }
 
 #garden h3 {
-  font-size: 1.5rem;
+  font-size: 2rem;
   color: #159A48;
   margin-bottom: 0rem;
 }
@@ -411,7 +511,23 @@ main {
   .shop-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+  .garden-plot-grid {
+    padding: 0 2.5rem;
+  }
 }
+/* Extra large screens: more side padding for .garden-plot-grid */
+@media screen and (min-width: 1200px) and (max-width: 1399px) {
+  .garden-plot-grid {
+    padding: 0 12rem;
+  }
+}
+@media screen and (min-width: 1400px) {
+  .garden-plot-grid {
+    padding: 0 16rem;
+  }
+}
+
+
 
 @media screen and (max-width: 600px) {
   .shop-grid {
