@@ -521,7 +521,8 @@ setInterval(updateShopCountdown, 1000);
 // Also reset shop and start countdown on page load
 resetShop();
 updateShopCountdown();
-// Update the coin balance in both the shop and the main balance section
+// Update the coin balance in both the shop and the 
+//  balance section
 function updateCoinUI() {
   // Update main balance
   const balanceCoins = document.getElementById('balance-coins');
@@ -664,28 +665,32 @@ function answerTrivia() {
 
 // Puzzle minigame: Only straight pipes, rotate to connect horizontally
 function solvePuzzle() {
-  // For beginners: only straight pipes, must rotate both to horizontal (0°)
-  // The correct solution: [straight (0°), straight (0°)]
+
+  // For beginners: only straight pipes, must rotate all to horizontal (0°)
+  // The correct solution: [straight (0°), straight (0°), straight (0°)]
   const solution = [
+    { type: 'straight', rotation: 0 },
     { type: 'straight', rotation: 0 },
     { type: 'straight', rotation: 0 }
   ];
 
-  // Only show 2 straight pieces, both start at 90° (vertical)
+  // Only show 3 straight pieces, all start at 90° (vertical)
   const availablePieces = [
+    { type: 'straight', rotation: 90 },
     { type: 'straight', rotation: 90 },
     { type: 'straight', rotation: 90 }
   ];
 
-  // Unicode for pipes: 0° = horizontal, 90° = vertical
+  // Unicode for pipes: 0° = horizontal, 1: vertical
   const pipeChars = {
     'straight': ['─', '│'] // 0: horizontal, 1: vertical
   };
 
-  // The slots to fill (start with both pieces in place, both vertical)
+  // The slots to fill (start with all pieces in place, all vertical)
   let slots = [
     { ...availablePieces[0], _pieceId: 0 },
-    { ...availablePieces[1], _pieceId: 1 }
+    { ...availablePieces[1], _pieceId: 1 },
+    { ...availablePieces[2], _pieceId: 2 }
   ];
 
   // Create modal if not present
@@ -708,11 +713,11 @@ function solvePuzzle() {
       <div style='font-size:1.3rem;'><span style='border:1.5px solid #8BD1CB; border-radius:0.4rem; padding:0.2rem 0.5rem; background:#e0f7fa;'>�</span><br><span style='font-size:0.9rem; color:#159A48;'>Click to rotate</span></div>
     </div>`;
 
-    // Puzzle row: water source, 2 slots, flower
+    // Puzzle row: water source, 3 slots, flower
     let puzzleHtml = `<div style="display:flex; align-items:center; gap:0.5rem; justify-content:center; margin-bottom:1.2rem;">
       <span style='font-size:2rem; margin-right:0.2rem;'>🚰</span>`;
     // Render slots
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 3; i++) {
       let slotContent = '';
       if (slots[i]) {
         // Show the pipe piece in the slot
@@ -752,7 +757,7 @@ function solvePuzzle() {
 
     // Check button
     document.getElementById('puzzle-check').onclick = function() {
-      // Check if both slots are horizontal (0°)
+      // Check if all slots are horizontal (0°)
       let correct = slots.every(slot => slot && slot.type === 'straight' && slot.rotation === 0);
       if (correct) {
         playYaySound(); // Play success sound
@@ -772,7 +777,7 @@ function solvePuzzle() {
           }
         }, 0); // 0ms delay to ensure DOM is ready
       } else {
-        renderPuzzle('Rotate both pipes to be horizontal!');
+        renderPuzzle('Rotate all pipes to be horizontal!');
       }
     };
     // Exit button
