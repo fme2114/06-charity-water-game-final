@@ -43,6 +43,7 @@
   align-items: center;
   justify-content: center;
 }
+
 .plot-svg {
   width: 100%;
   height: auto;
@@ -52,6 +53,28 @@
   box-shadow: 0 2px 8px #9b765344;
   transition: box-shadow 0.15s;
 }
+
+main {
+background: linear-gradient(120deg, #8BD1CB 0%, #2E9DF7 100%);
+    border-radius: 2.2rem;
+    box-shadow: 0 8px 32px #2E9DF744, 0 1.5px 6px #FFC90733;
+    padding: 2.5rem 3.5rem 2.5rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 70vh;
+    max-height: 95vh;
+    overflow-y: auto;
+}
+
+.screen {
+    padding: 1.5rem 1.5rem 1.5rem 1.5rem;
+    border-radius: 1.2rem;
+    background: #fff;
+    box-shadow: 0 2px 12px #2E9DF711;
+    margin-bottom: 2rem;
+  }
+
 .plot-svg:hover {
   box-shadow: 0 6px 18px #2E9DF744;
 }
@@ -118,7 +141,16 @@
   margin: 2rem auto 1rem auto;
   width: 100%;
   max-width: 100vw;
-  padding: 0 6rem;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+  margin-bottom: 0.5rem;
+  .garden-plot-grid {
+    max-width: 500px;
+    padding: 0 2.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0.5rem;
+  }
 }
 .plot-svg {
   width: 100%;
@@ -290,7 +322,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 body {
-  background-color: #f4f1e9;
+  background-color: #c4f1c4;
   color: #333;
   text-align: center;
   /* Removed default body padding for a flush layout */
@@ -298,10 +330,11 @@ body {
 }
 
 h2 {
-  font-size: 2rem;
+  font-size: 2.5rem;
   color: #2E9DF7;
-  margin: 0.5rem auto 1rem auto;
+  margin: 1rem 1rem 1rem 1rem;
   text-align: center;
+  justify-content: center;
   width: 100%;
   display: block;
   margin-top: 1rem;
@@ -310,10 +343,14 @@ h2 {
 nav {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
   margin-left: auto;
   margin-right: auto;
+  max-width: 600px;
+  padding: 0 2rem;
+  box-sizing: border-box;
 }
 
 
@@ -360,7 +397,7 @@ nav button:active {
 @media screen and (min-width: 601px) {
   main {
     max-width: 1100px;
-    margin: 2.5rem auto 2rem auto;
+    margin: 2rem 2rem;
     background: linear-gradient(120deg, #8BD1CB 0%, #2E9DF7 100%);
     border-radius: 2.2rem;
     box-shadow: 0 8px 32px #2E9DF744, 0 1.5px 6px #FFC90733;
@@ -519,6 +556,7 @@ nav button:active {
 @media screen and (min-width: 1200px) and (max-width: 1399px) {
   .garden-plot-grid {
     padding: 0 12rem;
+
   }
 }
 @media screen and (min-width: 1400px) {
